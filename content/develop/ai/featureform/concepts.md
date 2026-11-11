@@ -13,7 +13,7 @@ Redis Feature Form is a feature platform. It turns raw data from your existing s
 
 A Feature Form deployment runs one or more [workspaces](#workspaces). Each workspace owns a versioned [resource graph](#the-resource-graph) that describes what features should exist, where their inputs live, and how they're served. You author that graph in a Python [definitions file](#definitions-files-and-ff-apply) and apply it with `ff apply`. The `ff` command-line tool also handles workspaces, providers, RBAC, and serving operations.
 
-The graph itself is data, not credentials or connections. [Providers](#providers) connect the workspace to external systems (Postgres, Redis, S3, Spark, an Iceberg catalog), and [secret references](#secrets-and-secret-references) point to the backend that holds the credentials. At the end of the chain, a [feature view](#feature-views-and-serving) is the single resource the rest of your stack reads from to serve features online.
+The graph itself is data, not credentials or connections. [Providers](#providers) connect the workspace to external systems (Postgres, Snowflake, Databricks, Redis, S3, Spark, an Iceberg catalog), and [secret references](#secrets-and-secret-references) point to the backend that holds the credentials. At the end of the chain, a [feature view](#feature-views-and-serving) is the single resource the rest of your stack reads from to serve features online.
 
 ## Workspaces
 
@@ -132,6 +132,8 @@ One provider often fills more than one role. Postgres, for example, is commonly 
 | Provider          | Typical roles                  |
 | ----------------- | ------------------------------ |
 | Postgres          | `offline-store`, `compute`     |
+| Snowflake         | `offline-store`, `compute`     |
+| Databricks        | `offline-store`, `compute`     |
 | Redis             | `online-store`                 |
 | S3                | `offline-store`                |
 | Spark             | `compute`                      |
@@ -190,7 +192,7 @@ To serve from a feature view in an application, see [Serve features](/content/de
 
 - [Quickstart](/content/develop/ai/featureform/quickstart.md) — one end-to-end walkthrough that exercises every concept on this page.
 - [Manage workspaces](/content/develop/ai/featureform/manage-workspace.md) — create, inspect, update, and delete workspaces.
-- [Register providers](/content/develop/ai/featureform/register-providers/_index.md) — connect the workspace to Postgres, Redis, S3, Spark, or an Iceberg catalog, and register secret backends.
+- [Register providers](/content/develop/ai/featureform/register-providers/_index.md) — connect the workspace to Postgres, Snowflake, Databricks, Redis, S3, Spark, or an Iceberg catalog, and register secret backends.
 - [Define and deploy features](/content/develop/ai/featureform/define-and-deploy-features.md) — author a definitions file and run `ff apply`.
 - [Update features](/content/develop/ai/featureform/update-features.md) — iterate on a graph after the first apply.
 - [Serve features](/content/develop/ai/featureform/serve-features.md) — read from a feature view in an application.

@@ -7,7 +7,7 @@ aliases:
 - /develop/ai/featureform/streaming/
 ---
 
-Register the providers and secret backends Redis Feature Form needs before you author features or transformations. Providers connect a workspace to external systems, and definitions files reference them by name.
+Register the providers and secret backends Redis Feature Form needs before you author features or transformations. [Providers](/content/develop/ai/featureform/concepts.md#providers) connect a workspace to external systems, and definitions files reference them by name.
 
 ## Prerequisites
 
@@ -36,21 +36,32 @@ Provider names are unique within a workspace. Use stable names because definitio
 
 A provider fills one or more literal roles: `offline-store`, `online-store`, `compute`, or `streaming`. Registration support doesn't mean every resource accepts every provider.
 
-| Provider | Roles | Use it for |
-| --- | --- | --- |
-| [Databricks](/content/develop/ai/featureform/register-providers/databricks.md) | `offline-store`, `compute` | Managed Spark compute with Unity Catalog outputs |
-| [Snowflake](/content/develop/ai/featureform/register-providers/snowflake.md) | `offline-store`, `compute` | Snowflake datasets and SQL compute |
-| [PostgreSQL](/content/develop/ai/featureform/register-providers/postgresql.md) | `offline-store`, `compute` | PostgreSQL datasets and SQL compute |
-| [S3](/content/develop/ai/featureform/register-providers/s3.md) | `offline-store` | Object storage and Spark data or staging access |
-| [Redis](/content/develop/ai/featureform/register-providers/redis.md) | `online-store` | Low-latency feature serving |
-| Spark | `compute` | Generic Spark execution |
-| Iceberg catalog | `offline-store` | Catalog-backed Iceberg tables |
+| Provider | Provider type | Roles | Use it for |
+| --- | --- | --- | --- |
+| [Databricks](/content/develop/ai/featureform/register-providers/databricks.md) | `databricks` | `offline-store`, `compute` | Managed Spark compute with Unity Catalog outputs |
+| [Unity Catalog](/content/develop/ai/featureform/register-providers/databricks.md#register-unity-catalog) | `unity-catalog` | `offline-store` | Databricks catalog access for direct reads and job artifact storage |
+| [Snowflake](/content/develop/ai/featureform/register-providers/snowflake.md) | `snowflake` | `offline-store`, `compute` | Snowflake datasets and SQL compute |
+| [PostgreSQL](/content/develop/ai/featureform/register-providers/postgresql.md) | `postgres` | `offline-store`, `compute` | PostgreSQL datasets and SQL compute |
+| [S3](/content/develop/ai/featureform/register-providers/s3.md) | `s3` | `offline-store` | Object storage and Spark data or staging access |
+| [Redis](/content/develop/ai/featureform/register-providers/redis.md) | `redis`, `redis-cluster` | `online-store` | Low-latency feature serving |
+| Spark | `spark` | `compute` | Generic Spark execution |
+| Iceberg catalog | `iceberg` | `offline-store` | Catalog-backed Iceberg tables |
 
-Use `ff provider register --help` to see the complete list of provider types and their current options.
+Pass the provider type to `--type` when you run `ff provider register`. Use `ff provider register --help` to see the complete list of provider types and their current options.
 
 ## Configure secret providers
 
 Feature Form never stores credentials in any form. A provider configuration contains secret references, and the Feature Form process that needs a credential resolves it from the registered backend.
+
+Secret providers register with `ff secret-provider register`, separately from the providers in the previous table. The secret provider types are:
+
+| Secret provider | Secret provider type |
+| --- | --- |
+| [Environment variables](#register-an-environment-secret-provider) | `env-var` |
+| [Vault](#register-vault) | `vault` |
+| [Kubernetes secrets](#register-kubernetes-secrets) | `k8s-secret` |
+| [AWS Secrets Manager](#register-aws-secrets-manager) | `aws-secrets-manager` |
+| [Databricks secret scopes](/content/develop/ai/featureform/register-providers/databricks.md) | `databricks-secret` |
 
 Each workspace includes an `env` secret provider. An `env:PG_PASSWORD` reference reads `PG_PASSWORD` from the Feature Form server's environment, not from the shell where you run `ff`.
 
